@@ -13,12 +13,10 @@ model User {
   name          String
   email         String        @unique
   password_hash String
-  role          String        // 'candidate' or 'employer'
+  role          String
   created_at    DateTime      @default(now())
-
-  // Relations
-  postedJobs    Job[]         @relation("EmployerJobs")
   applications  Application[] @relation("CandidateApplications")
+  postedJobs    Job[]         @relation("EmployerJobs")
 }
 
 model Job {
@@ -30,10 +28,8 @@ model Job {
   salary_range    String
   posted_by       String
   created_at      DateTime      @default(now())
-
-  // Relations
-  employer        User          @relation("EmployerJobs", fields: [posted_by], references: [id])
   applications    Application[]
+  employer        User          @relation("EmployerJobs", fields: [posted_by], references: [id])
 }
 
 model Application {
@@ -44,10 +40,8 @@ model Application {
   phone              String   @default("")
   address            String   @default("")
   resume_url         String?
-  application_status String   @default("pending") // e.g. 'pending', 'reviewed', 'accepted', 'rejected'
+  application_status String   @default("pending")
   applied_at         DateTime @default(now())
-
-  // Relations
-  job                Job      @relation(fields: [job_id], references: [id])
   candidate          User     @relation("CandidateApplications", fields: [candidate_id], references: [id])
+  job                Job      @relation(fields: [job_id], references: [id])
 }
